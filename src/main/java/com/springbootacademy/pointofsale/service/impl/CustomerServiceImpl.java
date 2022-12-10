@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,7 +22,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public String saveCustomer(CustomerDTO customerDTO) {
         Customer customer = new Customer(
-                customerDTO.getCustomerId(),
+                //customerDTO.getCustomerId(),
                 customerDTO.getCustomerName(),
                 customerDTO.getCustomerAddress(),
                 customerDTO.getCustomerSalary(),
@@ -88,6 +90,35 @@ public class CustomerServiceImpl implements CustomerService {
             return customerDTO;
         } else {
             throw new RuntimeException("Not Found");
+        }
+    }
+
+    @Override
+    public List<CustomerDTO> getAllCustomers() {
+        List<Customer> getCustomer = customerRepository.findAll();
+        List<CustomerDTO> customerDTOList = new ArrayList<>();
+        for(Customer customer : getCustomer){
+            CustomerDTO customerDTO = new CustomerDTO(
+                    customer.getCustomerId(),
+                    customer.getCustomerName(),
+                    customer.getCustomerAddress(),
+                    customer.getCustomerSalary(),
+                    customer.getNic(),
+                    customer.getContactNumber(),
+                    customer.isActiveState()
+            );
+            customerDTOList.add(customerDTO);
+        }
+        return customerDTOList;
+    }
+
+    @Override
+    public String deleteCustomer(int customerId) {
+        if(customerRepository.existsById(customerId)){
+            customerRepository.deleteById(customerId);
+            return "Customer "+customerId+" deleted";
+        }else{
+            return "No customer deleted";
         }
     }
 }
