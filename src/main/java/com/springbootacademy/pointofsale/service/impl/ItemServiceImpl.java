@@ -4,6 +4,7 @@ import com.springbootacademy.pointofsale.dto.ItemDTO;
 import com.springbootacademy.pointofsale.dto.request.RequestItemSaveDTO;
 import com.springbootacademy.pointofsale.entity.Customer;
 import com.springbootacademy.pointofsale.entity.Item;
+import com.springbootacademy.pointofsale.exception.NotFoundException;
 import com.springbootacademy.pointofsale.repository.ItemRepository;
 import com.springbootacademy.pointofsale.service.ItemService;
 import com.springbootacademy.pointofsale.util.mappers.ItemMapper;
@@ -42,12 +43,18 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDTO> getItemByNameAndActiveState(String itemName) {
+    public List<ItemDTO> getItemByNameAndActiveState(String itemName)  {
         boolean b = true;
         List<Item> items = itemRepository.findAllByItemNameAndActiveState(itemName,b);
 //        List<ItemDTO> itemDTOS = modelMapper.map(items, new TypeToken<List<ItemDTO>>() {
 //        }.getType());
-        List<ItemDTO> itemDTOS = itemMapper.entityListToDtoList(items);
-        return itemDTOS;
+        if(items.size()>0){
+            List<ItemDTO> itemDTOS = itemMapper.entityListToDtoList(items);
+            return itemDTOS;
+        }
+        else{
+            throw new NotFoundException("Not Found");
+        }
+
     }
 }

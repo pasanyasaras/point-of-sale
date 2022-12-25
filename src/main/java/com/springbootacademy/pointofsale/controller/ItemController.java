@@ -4,6 +4,7 @@ import com.springbootacademy.pointofsale.dto.ItemDTO;
 import com.springbootacademy.pointofsale.dto.request.RequestItemSaveDTO;
 import com.springbootacademy.pointofsale.service.ItemService;
 import com.springbootacademy.pointofsale.util.StandardResponse;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,23 +22,27 @@ public class ItemController {
 
 
     @PostMapping(path="/save")
-    public String saveItem(@RequestBody RequestItemSaveDTO requestItemSaveDTO){
+    public ResponseEntity<StandardResponse> saveItem(@RequestBody RequestItemSaveDTO requestItemSaveDTO){
         String add = itemService.addItem(requestItemSaveDTO);
-        return "Saved";
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(200,"Success",add),HttpStatus.OK);
     }
 
     @GetMapping(path = "/get-by-name", params = "name")
-    public List<ItemDTO> getItemByNameAndActiveState(@RequestParam(value="name") String itemName){
+    public List<ItemDTO> getItemByNameAndActiveState(@RequestParam(value="name") String itemName) {
         List<ItemDTO> itemDTOS = itemService.getItemByNameAndActiveState(itemName);
+
         return itemDTOS;
     }
 
     @GetMapping(path = "/get-by-name1", params = "name")
-    public ResponseEntity<StandardResponse> getItemByNameAndActiveState1(@RequestParam(value="name") String itemName){
+    public ResponseEntity<StandardResponse> getItemByNameAndActiveState1(@RequestParam(value="name") String itemName)  {
         List<ItemDTO> itemDTOS = itemService.getItemByNameAndActiveState(itemName);
-        ResponseEntity<StandardResponse> response = new ResponseEntity<StandardResponse>(
-                new StandardResponse(201,"Success",itemDTOS), HttpStatus.OK
-        );
-        return response;
+//        ResponseEntity<StandardResponse> response = new ResponseEntity<StandardResponse>(
+//                new StandardResponse(201,"Success",itemDTOS), HttpStatus.OK
+//        );
+//        return response;
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(200,"Success",itemDTOS),HttpStatus.OK);
     }
 }
