@@ -121,4 +121,43 @@ public class CustomerServiceImpl implements CustomerService {
             return "No customer deleted";
         }
     }
+
+    @Override
+    public CustomerDTO getCustomerByNic(String nic) {
+        Optional<Customer> customer = customerRepository.findByNic(nic);
+        if (customer.isPresent()) {
+            CustomerDTO customerDTO = new CustomerDTO(
+                    customer.get().getCustomerId(),
+                    customer.get().getCustomerName(),
+                    customer.get().getCustomerAddress(),
+                    customer.get().getCustomerSalary(),
+                    customer.get().getNic(),
+                    customer.get().getContactNumber(),
+                    customer.get().isActiveState()
+            );
+            return customerDTO;
+        } else {
+            throw new RuntimeException("Not Found");
+        }
+
+    }
+
+    @Override
+    public List<CustomerDTO> getAllCustomersByState(boolean status) {
+        List<Customer> getCustomer = customerRepository.findAllByActiveState(status);
+        List<CustomerDTO> customerDTOList = new ArrayList<>();
+        for(Customer customer : getCustomer){
+            CustomerDTO customerDTO = new CustomerDTO(
+                    customer.getCustomerId(),
+                    customer.getCustomerName(),
+                    customer.getCustomerAddress(),
+                    customer.getCustomerSalary(),
+                    customer.getNic(),
+                    customer.getContactNumber(),
+                    customer.isActiveState()
+            );
+            customerDTOList.add(customerDTO);
+        }
+        return customerDTOList;
+    }
 }

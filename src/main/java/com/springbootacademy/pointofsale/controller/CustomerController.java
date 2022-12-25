@@ -48,7 +48,23 @@ public class CustomerController {
 
     @DeleteMapping(path = "/delete-customer/{id}")
     public String deleteCustomer(@PathVariable(value = "id") int customerId){
-        String delete = customerService.deleteCustomer(customerId);
-        return null;
+        String deleted = customerService.deleteCustomer(customerId);
+        return deleted;
+    }
+
+
+    @GetMapping(
+            path="/get-by-nic",
+            params="id"
+    )
+    public CustomerDTO getCustomerByNic(@RequestParam(value = "nic") String nic){
+        CustomerDTO customerDTO = customerService.getCustomerByNic(nic);
+        return customerDTO;
+    }
+
+    @GetMapping("/get-all-customers-by-active-state/{status}")
+    public List<CustomerDTO> getCustomersByState(@PathVariable(value="status") boolean status){
+        List<CustomerDTO> allCustomers = customerService.getAllCustomersByState(status);
+        return allCustomers;
     }
 }
