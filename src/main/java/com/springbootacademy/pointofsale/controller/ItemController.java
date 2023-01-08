@@ -1,6 +1,7 @@
 package com.springbootacademy.pointofsale.controller;
 
 import com.springbootacademy.pointofsale.dto.ItemDTO;
+import com.springbootacademy.pointofsale.dto.paginated.PaginatedResponseItemDTO;
 import com.springbootacademy.pointofsale.dto.request.RequestItemSaveDTO;
 import com.springbootacademy.pointofsale.service.ItemService;
 import com.springbootacademy.pointofsale.util.StandardResponse;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Max;
 import java.util.List;
 
 @RestController
@@ -45,4 +47,19 @@ public class ItemController {
         return new ResponseEntity<StandardResponse>(
                 new StandardResponse(200,"Success",itemDTOS),HttpStatus.OK);
     }
+
+    @GetMapping(path = {"/get-all-item-by-status"}, params={"page","size","activeState"})
+    public ResponseEntity<StandardResponse> getAllItemsActive(
+            @RequestParam(value = "page") int page,
+            @RequestParam(value = "size") @Max(50) int size,
+            @RequestParam(value = "activeState") boolean activeState
+    ){
+        PaginatedResponseItemDTO paginatedResponseItemDTO = itemService.getAllItemsActive(page,size,activeState);
+        return new ResponseEntity<StandardResponse>(
+                new StandardResponse(200,"Success",paginatedResponseItemDTO),HttpStatus.OK);
+    }
 }
+
+
+
+
